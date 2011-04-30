@@ -1,0 +1,11 @@
+WARNING WARNING WARNING
+This is some VERY Quick&Dirty coding. It *seems* to work for me, which is enough for me. If it works for you: great. Otherwise: too bad! :(
+I haven't bothered to make it configurable, or robust, etc.
+Furthermore, I almost never coded Python before, and *definitely* never coded Gtk/Gobject/Hildon before, and it certainly shows. It probably is buggy
+as hell due to me misunderstanding everything, probably also leaks?
+
+
+What I really ought to to as a TODO:
+* Make more pretty
+* View call/topup history in a seperate view?
+* What with people with multiple SIMs? (Since I only have 1 SIM, I cannot test this!)
