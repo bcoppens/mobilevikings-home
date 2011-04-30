@@ -16,6 +16,7 @@ import dbus
 import gobject
 import dbus.glib
 import conic
+import urllib
 
 conic_magic = 0xAA55 # WTH is this, the python example uses this but what purpose does it serve? No explanation given...
 
@@ -39,8 +40,8 @@ class XMLGetter:
         c.setopt(pycurl.SSL_VERIFYPEER, True)
         c.setopt(pycurl.CAPATH, "/etc/certs/common-ca/")
         c.setopt(pycurl.TIMEOUT, 70) # timeout in seconds, in case network is down. TODO ### Check if network is down, ask for connection!
-
-        c.setopt(pycurl.URL, 'https://%s:%s@mobilevikings.com/api/1.0/rest/mobilevikings/%s.xml' % (self.username, self.password, action))
+        
+        c.setopt(pycurl.URL, 'https://%s:%s@mobilevikings.com/api/1.0/rest/mobilevikings/%s.xml' % (urllib.quote_plus(self.username), urllib.quote_plus(self.password), action))
         b = StringIO.StringIO()
         c.setopt(pycurl.WRITEFUNCTION, b.write)
         c.perform()
@@ -86,17 +87,19 @@ class DummyBalance:
         self.valid_until_short = reason
 
 class InfoDrawer:
+    color_red = 0
+    color_green = 0
+    color_blue = 0
     def outlinedText(self, cr, text):
         # Use Text path => fill and stroke so we have an outline
-        cr.set_source_rgb(0,0,0)
+        cr.select_font_face("Nokia Sans")
+        cr.set_font_size(28)
+        cr.set_source_rgb(InfoDrawer.color_red, InfoDrawer.color_green, InfoDrawer.color_blue)
         cr.text_path(text)
         cr.fill_preserve()
-        cr.set_source_rgb(0xFFFF,0xFFFF,0xFFFF)
-        cr.stroke()
 
     def setFont(self, cr, size):
-        # Font: Tahoma, Bold, Size 50
-        cr.select_font_face("tahoma", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        cr.select_font_face("SystemFont")
         cr.set_font_size(size)
 
     def drawInfo(self, drawee, cr):
@@ -125,7 +128,7 @@ class NoUserInfoDrawer(InfoDrawer):
 
 class CouldntGetDataDrawer(InfoDrawer):
     def load(self, drawee):
-        drawee.set_size_request(400,125)
+        drawee.set_size_request(300,125)
 
     def drawInfo(self, drawee, cr):
         self.setFont(cr, 40)
@@ -175,6 +178,12 @@ class RegularInfoDrawer(InfoDrawer):
 class MobileVikingsPlugin(HildonHomePluginItem):
     def __init__(self):
         HildonHomePluginItem.__init__(self, header = "Mobile Vikings", corner_radius = 7)
+        
+        style = self.rc_get_style()
+        color = style.lookup_color("DefaultTextColor")
+        InfoDrawer.color_red = color.red/65535.0
+        InfoDrawer.color_green = color.green/65535.0
+        InfoDrawer.color_blue = color.blue/65535.0
 
         self.regularinfo = RegularInfoDrawer() # so we cache the images
         self.drawer = StartingDrawer()
@@ -319,4 +328,3 @@ if __name__ == "__main__":
     obj = gobject.new(hd_plugin_type, plugin_id="plugin_id")
     obj.show()
     gtk.main()
-
