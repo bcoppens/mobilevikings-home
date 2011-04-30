@@ -1,3 +1,5 @@
+This is the public git repository for an N900 Mobile Vikings Homescreen Widget, see http://www.bartcoppens.be/mobilevikings-home/ Mobile Vikings is a Belgian cellular voice/data provider.
+
 WARNING WARNING WARNING
 This is some VERY Quick&Dirty coding. It *seems* to work for me, which is enough for me. If it works for you: great. Otherwise: too bad! :(
 I haven't bothered to make it configurable, or robust, etc.
